@@ -17,8 +17,7 @@ Alternativamente o como puntos adicionales podéis plantear desarrollar algunos 
 
 ## Pasos a seguir para crear desde cero
 
-### Prerequisitos
-node
+Prerequisitos: tener instalado node
 
 Creación del proyecto:
 ```bash
@@ -37,3 +36,14 @@ La opción `--save-dev`es para que la instalación sea solo para desarrollo. De 
     "webpack-cli": "^3.3.11"
   }
 ```
+Instalamos babel para poder transpilar desde Typescript y ES6/7
+```bash
+npm install @babel/cli @babel/core @babel/preset-env --save-dev
+```
+Instalamos el loader de babel
+```bash
+npm install babel-loader --save-dev
+```
+Creamos el fichero `.babelrc`
+
+Creamos el fichero `webpack.config.js`
