@@ -1,1 +1,7 @@
 app-webpack/node_modules/
+app-webpack/dist/
+app-parcel/node_modules/
+app-parcel/.cache/
+app-parcel/dist/
+**/.DS_Store
+
