@@ -5,10 +5,15 @@ const basePath = __dirname;
 
 module.exports = {
     context: path.join(basePath, "src"),
+    resolve: {
+      extensions: [".js", ".ts", ".tsx"],
+    },    
     entry: {
-        app: "./index.js",
+        app: "./index.tsx",
         appStyles: ["./styles/styles.scss"],
-    },
+    }, 
+    devtool: "eval-source-map",
+    stats: "errors-only",
     output: {
         // salida: nombre del fichero + hash
         filename: "[name].[chunkhash].js"
@@ -20,6 +25,11 @@ module.exports = {
             exclude: /node_modules/,
             loader: "babel-loader"
           },
+          {
+            test: /\.tsx?$/,
+            exclude: /node_modules/,
+            loader: "babel-loader",
+          },          
           {
             test: /\.scss$/,
             exclude: /node_modules/,
