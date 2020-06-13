@@ -5,8 +5,10 @@
   "repository": "https://github.com/drechema/mf8-classwork-bundling",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && webpack --mode development",
-    "start": "webpack-dev-server --mode development --open"
+    "start": "webpack-dev-server --mode development --open --config webpack.development.js",
+    "build:dev": "rimraf dist && webpack --config webpack.development.js",
+    "build:prod": "rimraf dist && webpack --config webpack.production.js",
+    "build:size": "rimraf dist && webpack --config webpack.analyzer.js"
   },
   "keywords": [],
   "author": "David Reche",
@@ -21,6 +23,7 @@
     "@types/react-dom": "^16.9.8",
     "babel-loader": "^8.1.0",
     "css-loader": "^3.5.3",
+    "dotenv-webpack": "^1.8.0",
     "file-loader": "^6.0.0",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
@@ -31,8 +34,10 @@
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
     "webpack": "^4.43.0",
+    "webpack-bundle-analyzer": "^3.8.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "react": "^16.13.1",

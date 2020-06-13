@@ -88,7 +88,7 @@ Si queremos tener un web server con live-reloading en memoria podemos usar webpa
 npm install webpack-dev-server --save-dev
 ```
 
-Con esto podemos cambiar el start a:
+Si lo instalamos entonces podemos cambiar el start a:
 
 ```json
   "scripts": {
@@ -126,7 +126,7 @@ Para gestionar estilos CSS y SASS en el bundle instalamos los loader y plugin co
 npm install style-loader css-loader mini-css-extract-plugin sass sass-loader --save-dev
 ```
 
-## 6. Imagenes
+## 6. Imágenes
 
 Para gestionar imagenes en el bundle instalamos los siguientes loaders
 
@@ -148,7 +148,7 @@ npm install react react-dom --save
 
 Finalmente el fichero `package.json` debería de contener las siguientes dependencias:
 
-```json
+```javascript
   "devDependencies": {
     // dependencias para Babel
     "@babel/cli": "^7.8.4",
@@ -288,3 +288,87 @@ Por último tenemos las siguientes reglas. Es importante señalar que las reglas
       },
     ],
 ```
+
+## 9. Separación de configuraciones
+
+Para mayor flexibilidad y legibilidad he separado configuraciones para ambientes diferentes. Para ello es necesario en primer lugar instalar webpack-merge.
+
+```bash
+npm install webpack-merge --save-dev
+```
+
+Posteriormente cambiamos el `webpack.config.js` para que contenga las propiedades necesarias comunes para el resto de configuraciones y lo renombramos como `webpack.common.js`. Posteriormente creamos los ficheros de configuración para desarrollo y producción `webpack.development.js` y `webpack.production.js` respectivamente. El contenido de los ficheros de configuración de desarrollo y producción es similar:
+
+```javascript
+const merge = require("webpack-merge");
+const common = require("./webpack.common.js");
+
+module.exports = merge(common, {
+  mode: "development", // production en el caso de producción
+  devtool: "inline-source-map", // solo en caso desarrollo
+  stats: "errors-only" // verbose en el caso de producción
+});
+```
+
+Finalmente actualizamos el fichero `package.json` para utilizar los ficheros de configuración según la necesidad. Por ejemplo:
+
+```javascript
+  "scripts": {
+    "start": "webpack-dev-server --mode development --open --config webpack.development.js",
+    "build:dev": "rimraf dist && webpack --config webpack.development.js",
+    "build:prod": "rimraf dist && webpack --config webpack.production.js"
+  },
+```
+
+## 10. Uso de variables de entorno
+
+Para usar variables de entorno usaremos el paquete `dotenv-webpack`.
+
+```bash
+npm install dotenv-webpack --save-dev
+```
+
+Crearemos al menos dos ficheros de entorno `development.env` y `production.env`, uno para desarrollo y otro para producción donde declaramos variables de entorno, los hemos creado dentro de la carpeta `environment` para que este más ordenado. En los ficheros de configuración webpack necesarios (desarrollo y producción) incluimos el uso del plugin con el path a cada uno de estos ficheros.
+
+```javascript
+const dotenv = require('dotenv-webpack');
+
+module.exports = {
+  ...
+  plugins: [
+    new dotenv({
+      path: "./environment/development.env" // "production.env" en el caso de producción
+    })
+  ]
+}
+```
+
+Dentro de estos ficheros declaramos las variables de entorno que sean necesarias y que necesiten valores diferentes en desarrollo y en producción. Para usar estas variables dentro de nuestro código las referenciamos mediante `process.env.VARIABLE`
+
+## 11. Bundle Analyzer
+
+Para medir cuanto ocupa cada librería y nuestro código en el bundle vamos a utilizar `webpack-bundle-analyzer`. Por lo tanto el primer paso es instalarlo.
+
+```bash
+npm install webpack-bundle-analyzer --save-dev
+```
+
+Vamos a crear un fichero de configuración de webpack especifico para las mediciones. Lo llamaremos `webpack.analyzer.js`. En este fichero haremos merge con el fichero de configuración de producción y añadiremos el plugin del analizador.
+
+```javascript
+const merge = require("webpack-merge");
+const prod = require("./webpack.production.js");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+
+module.exports = merge(prod, {
+  plugins: [new BundleAnalyzerPlugin()],
+});
+```
+
+Luego podremos usar este fichero desde un script en el `package.json`
+
+```javascript
+"build:size": "rimraf dist && webpack --config webpack.analyzer.js"
+```
+
+Y lanzar la visualización mediante `npm run build:size`

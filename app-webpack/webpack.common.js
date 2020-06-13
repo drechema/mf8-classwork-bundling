@@ -11,9 +11,7 @@ module.exports = {
     entry: {
         app: "./index.tsx",
         appStyles: ["./styles/styles.scss"],
-    }, 
-    devtool: "eval-source-map",
-    stats: "errors-only",
+    },
     output: {
         // salida: nombre del fichero + hash
         filename: "[name].[chunkhash].js"
